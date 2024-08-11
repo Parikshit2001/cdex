@@ -13,6 +13,7 @@ const TOKEN_PRICE_REFRESH_INTERVAL = 60 * 1000; // every 60s
 
 export const connection = new Connection(clusterApiUrl("mainnet-beta"));
 
+// Returns supported Tokens and their current Price
 export async function getSupportedTokens() {
   if (
     !LAST_UPDATED ||
