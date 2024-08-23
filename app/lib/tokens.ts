@@ -14,7 +14,7 @@ export const SUPPORTED_TOKENS: TokenDetails[] = [
     native: true,
     price: "180",
     image:
-      "https://upload.wikimedia.org/wikipedia/commons/3/34/Solana_cryptocurrency_two.jpg",
+      "https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png",
     decimals: 9,
   },
   {

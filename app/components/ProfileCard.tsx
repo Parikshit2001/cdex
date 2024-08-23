@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Loading } from "./Loading";
 import { PrimaryButton, TabButton } from "./Button";
+import { TokenWithbalance, useTokens } from "../hooks/useToken";
+import { TokenList } from "./TokenList";
 
 type Tab = "tokens" | "send" | "add_funds" | "swap" | "withdraw";
 const tabs: { id: Tab; name: string }[] = [
@@ -19,7 +21,8 @@ export const ProfileCard = ({ publicKey }: { publicKey: string }) => {
   const sesssion = useSession();
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState<Tab>("tokens");
-  console.log({ publicKey });
+  const { tokenBalances, loading } = useTokens(publicKey);
+  console.log(tokenBalances);
 
   if (sesssion.status === "loading") {
     return (
@@ -35,13 +38,17 @@ export const ProfileCard = ({ publicKey }: { publicKey: string }) => {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center">
-      <div className="bg-white shadow-2xl py-5 px-8 rounded-lg w-full max-w-3xl">
+    <div className="w-full h-screen pt-28">
+      <div className="bg-white shadow-2xl py-5 px-8 rounded-lg w-full max-w-3xl mx-auto">
         <Greeting
           image={sesssion.data.user.image ?? ""}
           name={sesssion.data.user.name ?? ""}
         />
-        <Balance />
+        <Balance
+          balance={tokenBalances?.totalBalance as number}
+          publicKey={publicKey}
+          loading={loading}
+        />
         {/* <Assets /> */}
         <div className="flex py-4 w-full">
           {tabs.map((tab) => (
@@ -54,10 +61,47 @@ export const ProfileCard = ({ publicKey }: { publicKey: string }) => {
             </TabButton>
           ))}
         </div>
+        <div className={`${selectedTab === "tokens" ? "visible" : "hidden"}`}>
+          <Assets
+            loading={loading}
+            publicKey={publicKey}
+            tokenBalances={tokenBalances}
+          />
+        </div>
       </div>
     </div>
   );
 };
+
+function Assets({
+  publicKey,
+  tokenBalances,
+  loading,
+}: {
+  publicKey: string;
+  tokenBalances: {
+    totalBalance: number;
+    tokens: TokenWithbalance[];
+  } | null;
+  loading: boolean;
+}) {
+  if (loading) {
+    return "Loading...";
+  }
+
+  return (
+    <div className="flex flex-col">
+      <div>
+        <p className="text-sm text-gray-400 font-medium">
+          Tiplink Account Assets
+        </p>
+      </div>
+      <div>
+        <TokenList tokens={tokenBalances?.tokens as TokenWithbalance[]} />
+      </div>
+    </div>
+  );
+}
 
 function Greeting({ image, name }: { image: string; name: string }) {
   return (
@@ -75,8 +119,15 @@ function Greeting({ image, name }: { image: string; name: string }) {
     </div>
   );
 }
-
-function Balance() {
+function Balance({
+  publicKey,
+  balance,
+  loading,
+}: {
+  publicKey: string;
+  balance: number;
+  loading: boolean;
+}) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -93,13 +144,18 @@ function Balance() {
   return (
     <div className="flex flex-col mt-6">
       <div>
-        <p className="text-sm text-gray-400 font-medium">Tiplink Account Assets</p>
+        <p className="text-sm text-gray-400 font-medium">
+          Tiplink Account Balance
+        </p>
       </div>
       <div className="flex justify-between items-center py-2">
-        <h2 className="text-5xl font-bold text-gray-700">${"0.00"} <span className="text-gray-500 text-3xl">USD</span></h2>
+        <h2 className="text-5xl font-bold text-gray-700">
+          ${loading ? "..." : balance}{" "}
+          <span className="text-gray-500 text-3xl">USD</span>
+        </h2>
         <PrimaryButton
           onClick={() => {
-            navigator.clipboard.writeText("0.00");
+            navigator.clipboard.writeText(publicKey);
             setCopied(true);
           }}
         >
@@ -109,5 +165,3 @@ function Balance() {
     </div>
   );
 }
-
-function Assets() {}

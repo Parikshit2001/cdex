@@ -12,7 +12,7 @@ export interface session extends Session {
   };
 }
 
-export const authConfig: AuthOptions = {
+export const authConfig = {
   secret: process.env.NEXT_AUTH_SECRET || "secr3t",
   providers: [
     Google({
@@ -78,7 +78,7 @@ export const authConfig: AuthOptions = {
       }
       return token;
     },
-    async session({ session, token }: any) {
+    session({ session, token }: any): session {
       // Send properties to the client, like an access_token and user id from a provider.
       const newSession: session = session as session;
       if (newSession.user && token.uid) {
