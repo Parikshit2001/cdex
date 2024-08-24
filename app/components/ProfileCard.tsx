@@ -7,6 +7,7 @@ import { Loading } from "./Loading";
 import { PrimaryButton, TabButton } from "./Button";
 import { TokenWithbalance, useTokens } from "../hooks/useToken";
 import { TokenList } from "./TokenList";
+import { Swap } from "./Swap";
 
 type Tab = "tokens" | "send" | "add_funds" | "swap" | "withdraw";
 const tabs: { id: Tab; name: string }[] = [
@@ -62,23 +63,35 @@ export const ProfileCard = ({ publicKey }: { publicKey: string }) => {
           ))}
         </div>
         <div className={`${selectedTab === "tokens" ? "visible" : "hidden"}`}>
-          <Assets
-            loading={loading}
-            publicKey={publicKey}
-            tokenBalances={tokenBalances}
-          />
+          <Assets loading={loading} tokenBalances={tokenBalances} />
+        </div>
+        <div className={`${selectedTab === "swap" ? "visible" : "hidden"}`}>
+          <Swap publicKey={publicKey} tokenBalances={tokenBalances} />
+        </div>
+        <div
+          className={`${
+            selectedTab !== "tokens" && selectedTab !== "swap"
+              ? "visible"
+              : "hidden"
+          }`}
+        >
+          <Warning />
         </div>
       </div>
     </div>
   );
 };
 
+function Warning() {
+  return (
+    <div className="text-center py-10">We do not support this feature yet</div>
+  );
+}
+
 function Assets({
-  publicKey,
   tokenBalances,
   loading,
 }: {
-  publicKey: string;
   tokenBalances: {
     totalBalance: number;
     tokens: TokenWithbalance[];
@@ -92,10 +105,9 @@ function Assets({
   return (
     <div className="flex flex-col">
       <div>
-        <p className="text-sm text-gray-400 font-medium">
-          Tiplink Account Assets
-        </p>
+        <p className="text-sm text-gray-400 font-medium">CDEX Account Assets</p>
       </div>
+      <div className="border mb-4" />
       <div>
         <TokenList tokens={tokenBalances?.tokens as TokenWithbalance[]} />
       </div>
@@ -145,7 +157,7 @@ function Balance({
     <div className="flex flex-col mt-6">
       <div>
         <p className="text-sm text-gray-400 font-medium">
-          Tiplink Account Balance
+          CDEX Account Balance
         </p>
       </div>
       <div className="flex justify-between items-center py-2">

@@ -1,4 +1,4 @@
-import { AuthOptions, Session } from "next-auth";
+import { Session } from "next-auth";
 import Google from "next-auth/providers/google";
 import prisma from "../db";
 import { Keypair } from "@solana/web3.js";
