@@ -3,7 +3,10 @@ import { TokenWithbalance } from "../hooks/useToken";
 import { SUPPORTED_TOKENS, TokenDetails } from "../lib/tokens";
 import axios from "axios";
 
-export function Swap({publicKey, tokenBalances}: {
+export function Swap({
+  publicKey,
+  tokenBalances,
+}: {
   publicKey: string;
   tokenBalances: {
     totalBalance: number;
@@ -77,12 +80,12 @@ export function Swap({publicKey, tokenBalances}: {
             <div className="text-slate-500 pt-1 text-sm pl-1 flex items-center">
               <div className="font-normal pr-1">Current Balance:</div>
               <div className="font-semibold text-xs">
-                  {
-                    tokenBalances?.tokens.find((x) => x.name === baseAsset.name)
-                      ?.balance
-                  }{" "}
-                  {baseAsset.name}
-                </div>
+                {
+                  tokenBalances?.tokens.find((x) => x.name === baseAsset.name)
+                    ?.balance
+                }{" "}
+                {baseAsset.name}
+              </div>
             </div>
           }
         />
@@ -151,19 +154,41 @@ function SwapInputRow({
         <AssetSelector selectedToken={selectedToken} onSelect={onSelect} />
         {subtitle}
       </div>
-      <div>
-        <input
-          disabled={inputDisabled}
-          onChange={(e) => {
-            onAmountChange?.(e.target.value);
-          }}
-          placeholder="0"
-          type="text"
-          className="bg-slate-50 p-6 outline-none text-4xl text-right"
-          value={inputLoading ? "Loading" : amount}
-        ></input>
+      <div className="flex items-center">
+        {!inputLoading && (
+          <input
+            disabled={inputDisabled}
+            onChange={(e) => {
+              onAmountChange?.(e.target.value);
+            }}
+            placeholder="0"
+            type="text"
+            className="bg-slate-50 p-6 outline-none text-4xl text-right"
+            value={inputLoading ? "Loading" : amount}
+          ></input>
+        )}
+        {inputLoading && <HeroLoading />}
       </div>
     </div>
+  );
+}
+
+function HeroLoading() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      className="size-6"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+      />
+    </svg>
   );
 }
 
