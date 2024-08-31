@@ -1,4 +1,4 @@
-import { clusterApiUrl, Connection } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import axios from "axios";
 import { SUPPORTED_TOKENS } from "./tokens";
 
@@ -11,7 +11,9 @@ let prices: {
 
 const TOKEN_PRICE_REFRESH_INTERVAL = 60 * 1000; // every 60s
 
-export const connection = new Connection(clusterApiUrl("mainnet-beta"));
+export const connection = new Connection(
+  "https://mainnet.helius-rpc.com/?api-key=a58b8c2b-5d56-4d7a-b572-8eff434950c1"
+);
 
 // Returns supported Tokens and their current Price
 export async function getSupportedTokens() {
