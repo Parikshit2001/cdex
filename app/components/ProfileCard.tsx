@@ -8,6 +8,7 @@ import { PrimaryButton, TabButton } from "./Button";
 import { TokenWithbalance, useTokens } from "../hooks/useToken";
 import { TokenList } from "./TokenList";
 import { Swap } from "./Swap";
+import Image from "next/image";
 
 type Tab = "tokens" | "send" | "add_funds" | "swap" | "withdraw";
 const tabs: { id: Tab; name: string }[] = [
@@ -119,9 +120,11 @@ function Greeting({ image, name }: { image: string; name: string }) {
   return (
     <div className="">
       <div className="flex items-center">
-        <img
+        <Image
           className="rounded-full w-14 h-14 mr-3"
           src={image}
+          width={100}
+          height={100}
           alt="User profile Image"
         />
         <h1 className="text-2xl text-gray-700 font-medium">
