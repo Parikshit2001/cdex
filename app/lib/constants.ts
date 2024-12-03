@@ -12,7 +12,7 @@ let prices: {
 const TOKEN_PRICE_REFRESH_INTERVAL = 60 * 1000; // every 60s
 
 export const connection = new Connection(
-  "https://mainnet.helius-rpc.com/?api-key=a58b8c2b-5d56-4d7a-b572-8eff434950c1"
+  process.env.NEXT_PUBLIC_MAINNET_URL ?? "https://api.mainnet-beta.solana.com"
 );
 
 // Returns supported Tokens and their current Price
@@ -23,7 +23,7 @@ export async function getSupportedTokens() {
   ) {
     try {
       const response = await axios.get(
-        "https://price.jup.ag/v6/price?ids=SOL,USDC,USDT"
+        `https://api.jup.ag/price/v2?ids=${SUPPORTED_TOKENS[0].mint},${SUPPORTED_TOKENS[1].mint},${SUPPORTED_TOKENS[2].mint}`
       );
       prices = response.data.data;
       LAST_UPDATED = new Date().getTime();
@@ -33,6 +33,6 @@ export async function getSupportedTokens() {
   }
   return SUPPORTED_TOKENS.map((s) => ({
     ...s,
-    price: prices[s.name].price,
+    price: prices[s.mint].price,
   }));
 }
